@@ -1,0 +1,61 @@
+# Utiliser une image Python 3.11 officielle comme image de base
+FROM python:3.11-slim
+
+# Définir les variables d'environnement
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONFAULTHANDLER=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    POETRY_VERSION=1.6.1 \
+    FLASK_APP="app.py" \
+    FLASK_ENV="prod"
+
+# Définir le répertoire de travail dans le conteneur
+WORKDIR /app
+
+# Installer les dépendances système requises
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        gcc \
+        libaio1 \
+        curl \
+        build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installer Oracle Instant Client (requis pour oracledb)
+WORKDIR /tmp
+RUN curl -L -o instantclient-basiclite.zip https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip \
+    && curl -L -o instantclient-sdk.zip https://download.oracle.com/otn_software/linux/instantclient/instantclient-sdk-linuxx64.zip \
+    && unzip instantclient-basiclite.zip \
+    && unzip instantclient-sdk.zip \
+    && mv instantclient*/ /opt/oracle/instantclient \
+    && rm -f instantclient-*.zip \
+    && echo /opt/oracle/instantclient > /etc/ld.so.conf.d/oracle-instantclient.conf \
+    && ldconfig
+
+# Définir les variables d'environnement pour Oracle Instant Client
+ENV LD_LIBRARY_PATH=/opt/oracle/instantclient:$LD_LIBRARY_PATH \
+    PATH=/opt/oracle/instantclient:$PATH \
+    TNS_ADMIN=/opt/oracle/instantclient
+
+# Revenir au répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers requirements et installer les dépendances
+COPY requirements.txt .
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt
+
+# Créer le répertoire pour les logs
+RUN mkdir -p /app/logs \
+    && chmod 777 /app/logs
+
+# Copier le reste des fichiers d'application
+COPY . .
+
+# Exposer le port sur lequel l'application Flask sera en écoute
+EXPOSE 5000
+
+# Commande pour exécuter l'application avec Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--threads", "2", "--timeout", "120", "app:create_app()"]
