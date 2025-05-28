@@ -9,3 +9,28 @@ Traceback (most recent call last):
     log_level = getattr(logging, config.LOG_LEVEL)
                                  ^^^^^^^^^^^^^^^^
 AttributeError: 'Config' object has no attribute 'LOG_LEVEL'
+
+
+
+ [ERROR] app.services.db_service: {'error': "'Config' object has no attribute 'ORACLE_USER'", 'event': 'Erreur init pool Oracle', 
+ 'logger': 'app.services.db_service', 'level': 'error', 'timestamp': '2025-05-28 17:22:28', 'exception': 'Traceback (most recent call last):\n 
+  File "/home/ssp_api/app/services/db_service.py", line 27, in _initialize_pool\n    
+  user=self.config.ORACLE_USER,\n         ^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: \'Config\' object has no attribute \'ORACLE_USER\''}
+Traceback (most recent call last):
+  File "/home/ssp_api/./app.py", line 39, in <module>
+    app = create_app()
+          ^^^^^^^^^^^^
+  File "/home/ssp_api/./app.py", line 15, in create_app
+    app.db_service = OracleDBService(app.config)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssp_api/app/services/db_service.py", line 17, in __new__
+    cls._instance.__init_once(config)
+  File "/home/ssp_api/app/services/db_service.py", line 22, in __init_once
+    self.pool = self._initialize_pool()
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssp_api/app/services/db_service.py", line 27, in _initialize_pool
+    user=self.config.ORACLE_USER,
+         ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Config' object has no attribute 'ORACLE_USER'
+
+
