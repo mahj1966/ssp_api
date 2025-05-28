@@ -3,7 +3,8 @@ import logging
 import structlog
 
 def configure_logging(config):
-    log_level = getattr(logging, config.LOG_LEVEL)
+    #log_level = getattr(logging, config.LOG_LEVEL)
+    log_level = getattr(logging, config.get('LOG_LEVEL', 'INFO'))
     structlog.configure(
         processors=[
             structlog.stdlib.filter_by_level,
