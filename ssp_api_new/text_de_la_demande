@@ -1,0 +1,46 @@
+# Contexte du Projet
+**Objectif principal** : Automatiser la génération de configurations Terraform multi-cloud via une interface centralisée.
+
+**Composants existants** :
+1. Application Oracle APEX avec schéma de base de données contenant :
+   - Tables : `<cloud>_<ressource>_requests`, `<cloud>_<ressource>_requests_sg_ingress`
+   - Vues : `v_<cloud>_<ressource>_requests`,`<cloud>_<ressource>_requests_sg_ingress`
+   - Table `tf_templates` (stockage des templates Jinja)
+   - Table `users` (jetons GitLab)
+
+2. Workflow actuel :
+
+APEX → DB Oracle → API Flask → Génération Terraform → GitLab
+
+
+# Problème spécifique
+Implémenter un service Python Flask qui doit :
+
+1. Interroger la DB Oracle pour :
+- Récupérer les paramètres des ressources (via les vues)
+- Extraire le template Jinja approprié (on utilisant resource_type,cloud_id, module_version)
+
+2. Générer du code Terraform valide avec :
+- Combinaison données + template
+- Validation syntaxique
+- Gestion des dépendances (ex: règles de sécurité)
+
+3. Interagir avec GitLab pour :
+- Commit dans une nouvelle branche
+- Création de Merge Request
+- Utilisation des tokens utilisateurs stockés dans la table users 
+
+**Contraintes techniques** :
+- Python 3.12 obligatoire
+- Bibliothèques : `oracledb` (pas de cx_Oracle), `python-gitlab`, `jinja2`
+- Production-ready : logging, gestion d'erreurs, performances
+
+# Attentes de réponse
+Structure idéale de solution :
+1. Architecture modulaire (ex: couche DB séparée de la logique GitLab)
+2. Bonnes pratiques pour :
+- La gestion des connexions Oracle
+- Le sandboxing des templates Jinja
+- La sécurité des tokens GitLab
+3. Exemple de code pour le flux principal
+4. Recommandations de déploiement
