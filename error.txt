@@ -34,3 +34,36 @@ Traceback (most recent call last):
 AttributeError: 'Config' object has no attribute 'ORACLE_USER'
 
 
+
+
+[ERROR] app.services.db_service: {
+  'error': "create_pool() got an unexpected keyword argument 'encoding'", 
+  'event': 'Erreur init pool Oracle', 'logger': 'app.services.db_service', 
+  'level': 'error', 
+  'timestamp': '2025-05-29 20:47:21', 
+  'exception': 'Traceback (most recent call last):\n  File "/home/app/services/db_service.py", 
+  line 27, in _initialize_pool\n    pool = oracledb.create_pool(\n
+             ^^^^^^^^^^^^^^^^^^^^^\n
+               File "/usr/local/lib64/python3.12/site-packages/oracledb/pool.py", 
+               line 571, in create_pool\n
+                   f(dsn=dsn, pool_class=pool_class, params=params, 
+                   **kwargs)\nTypeError: create_pool() got an unexpected keyword argument \'encoding\''}
+Traceback (most recent call last):
+  File "/home/./app.py", line 39, in <module>
+    app = create_app()
+          ^^^^^^^^^^^^
+  File "/home/./app.py", line 15, in create_app
+    app.db_service = OracleDBService(app.config)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/app/services/db_service.py", line 17, in __new__
+    cls._instance.__init_once(config)
+  File "/home/app/services/db_service.py", line 22, in __init_once
+    self.pool = self._initialize_pool()
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/app/services/db_service.py", line 27, in _initialize_pool
+    pool = oracledb.create_pool(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib64/python3.12/site-packages/oracledb/pool.py", line 571, in create_pool
+    f(dsn=dsn, pool_class=pool_class, params=params, **kwargs)
+TypeError: create_pool() got an unexpected keyword argument 'encoding'
+
