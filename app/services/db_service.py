@@ -24,11 +24,11 @@ class OracleDBService:
     def _initialize_pool(self):
         try:
             pool = oracledb.create_pool(
-                user=self.config.ORACLE_USER,
-                password=self.config.ORACLE_PASSWORD,
-                dsn=self.config.ORACLE_DSN,
-                min=self.config.ORACLE_POOL_MIN,
-                max=self.config.ORACLE_POOL_MAX,
+                user=self.config["ORACLE_USER"],
+                password=self.config["ORACLE_PASSWORD"],
+                dsn=self.config["ORACLE_DSN"],
+                min=self.config.get("ORACLE_POOL_MIN", 2),
+                max=self.config.get("ORACLE_POOL_MAX", 10),
                 increment=1,
                 encoding="UTF-8"
             )
