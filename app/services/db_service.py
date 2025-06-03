@@ -220,7 +220,7 @@ class OracleDBService:
                     '4375' AS git_project_id, 'AWS' AS cloud, identifier AS short_name,
                     '2.3.0' AS module_version,  identifier||decode(lower(environment),
                     'prd','','-'||lower(environment)) identifier, upper(environment) environment, description,
-                    'Richemont' maison,'123456' service_mapping,'123456' project_id, 'APP0001' application,
+                    'xxxx' maison,'123456' service_mapping,'123456' project_id, 'APP0001' application,
                     powerpolicy,  lower(confidential_data) confidential_data, engine, engine_version,
                     instance_class,initial_storage_size
                     FROM port_request s, JSON_TABLE (s.ci_data, '$' COLUMNS (
